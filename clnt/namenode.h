@@ -8,62 +8,61 @@
 
 #include <rpc/rpc.h>
 
-#include <pthread.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-#define NAMENODE 0x20110000
+#define NAMENODE 0x20150000
 #define NN 1
 
 #if defined(__STDC__) || defined(__cplusplus)
 #define openFile 1
-extern  enum clnt_stat openfile_1(char **, char **, CLIENT *);
-extern  bool_t openfile_1_svc(char **, char **, struct svc_req *);
+extern  char ** openfile_1(char **, CLIENT *);
+extern  char ** openfile_1_svc(char **, struct svc_req *);
 #define getBlockLocations 2
-extern  enum clnt_stat getblocklocations_1(char **, char **, CLIENT *);
-extern  bool_t getblocklocations_1_svc(char **, char **, struct svc_req *);
+extern  char ** getblocklocations_1(char **, CLIENT *);
+extern  char ** getblocklocations_1_svc(char **, struct svc_req *);
 #define assignBlock 3
-extern  enum clnt_stat assignblock_1(char **, char **, CLIENT *);
-extern  bool_t assignblock_1_svc(char **, char **, struct svc_req *);
+extern  char ** assignblock_1(char **, CLIENT *);
+extern  char ** assignblock_1_svc(char **, struct svc_req *);
 #define closeFile 4
-extern  enum clnt_stat closefile_1(char **, char **, CLIENT *);
-extern  bool_t closefile_1_svc(char **, char **, struct svc_req *);
+extern  char ** closefile_1(char **, CLIENT *);
+extern  char ** closefile_1_svc(char **, struct svc_req *);
 #define list 5
-extern  enum clnt_stat list_1(char **, char **, CLIENT *);
-extern  bool_t list_1_svc(char **, char **, struct svc_req *);
-#define sendBlockReport 8
-extern  enum clnt_stat sendblockreport_1(char **, char **, CLIENT *);
-extern  bool_t sendblockreport_1_svc(char **, char **, struct svc_req *);
-#define sendHeartBeat 9
-extern  enum clnt_stat sendheartbeat_1(char **, char **, CLIENT *);
-extern  bool_t sendheartbeat_1_svc(char **, char **, struct svc_req *);
+extern  char ** list_1(char **, CLIENT *);
+extern  char ** list_1_svc(char **, struct svc_req *);
+#define sendBlockReport 6
+extern  char ** sendblockreport_1(char **, CLIENT *);
+extern  char ** sendblockreport_1_svc(char **, struct svc_req *);
+#define sendHeartBeat 7
+extern  char ** sendheartbeat_1(char **, CLIENT *);
+extern  char ** sendheartbeat_1_svc(char **, struct svc_req *);
 extern int namenode_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
 #define openFile 1
-extern  enum clnt_stat openfile_1();
-extern  bool_t openfile_1_svc();
+extern  char ** openfile_1();
+extern  char ** openfile_1_svc();
 #define getBlockLocations 2
-extern  enum clnt_stat getblocklocations_1();
-extern  bool_t getblocklocations_1_svc();
+extern  char ** getblocklocations_1();
+extern  char ** getblocklocations_1_svc();
 #define assignBlock 3
-extern  enum clnt_stat assignblock_1();
-extern  bool_t assignblock_1_svc();
+extern  char ** assignblock_1();
+extern  char ** assignblock_1_svc();
 #define closeFile 4
-extern  enum clnt_stat closefile_1();
-extern  bool_t closefile_1_svc();
+extern  char ** closefile_1();
+extern  char ** closefile_1_svc();
 #define list 5
-extern  enum clnt_stat list_1();
-extern  bool_t list_1_svc();
-#define sendBlockReport 8
-extern  enum clnt_stat sendblockreport_1();
-extern  bool_t sendblockreport_1_svc();
-#define sendHeartBeat 9
-extern  enum clnt_stat sendheartbeat_1();
-extern  bool_t sendheartbeat_1_svc();
+extern  char ** list_1();
+extern  char ** list_1_svc();
+#define sendBlockReport 6
+extern  char ** sendblockreport_1();
+extern  char ** sendblockreport_1_svc();
+#define sendHeartBeat 7
+extern  char ** sendheartbeat_1();
+extern  char ** sendheartbeat_1_svc();
 extern int namenode_1_freeresult ();
 #endif /* K&R C */
 

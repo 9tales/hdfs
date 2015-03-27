@@ -1,5 +1,7 @@
 #include <iostream>
+#include <fstream>
 #include <string>
+#include <sstream>
 #include "proto/hdfs.pb.h"
 #include "datanode.h"
 #include "namenode.h"
@@ -7,7 +9,7 @@
 using namespace std;
 using namespace HDFS;
 
-const string NN_HOST = "192.168.1.100";
+const string NN_HOST = "172.17.0.8";
 int DN_ID;
 vector<int> BlockList;
 
@@ -21,8 +23,28 @@ readblock_1_svc(char **argp, struct svc_req *rqstp)
 char **
 writeblock_1_svc(char **argp, struct svc_req *rqstp)
 {
-  static char * result;
-  return &result;
+  WriteBlockRequest req;
+  req.ParseFromString (*argp);
+
+  string filename;          // string which will contain the result
+  ostringstream convert;   // stream used for the conversion
+  convert << req.blockinfo().blocknumber();      // insert the textual representation of 'Number' in the characters in the stream
+  filename = convert.str(); // set 'Result' to the contents of the stream
+  
+  // writing file 
+  ofstream ofs(filename.c_str(), ios::binary);
+  ofs << req.data(0);
+
+  BlockList.push_back(req.blockinfo().blocknumber());
+
+  WriteBlockResponse rsp;
+  rsp.set_status(0); //no error
+  
+  int size = rsp.ByteSize();
+  static char *cstr = new char[size];
+  rsp.SerializeToArray(cstr, size);
+
+  return &cstr;
 }
 
 char **
@@ -33,12 +55,6 @@ sendblockreport_1_arg()
   req.set_id(DN_ID);
   for (unsigned int i=0; i < BlockList.size(); i++) 
     req.add_blocknumbers(BlockList[i]);
-
-  /*
-   *req.add_blocknumbers(7);
-   *req.add_blocknumbers(3);
-   *req.add_blocknumbers(4);
-   */
 
   // serialize this bitch!
   string str;

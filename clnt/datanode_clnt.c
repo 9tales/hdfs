@@ -9,38 +9,62 @@
 /* Default timeout can be changed using clnt_control() */
 static struct timeval TIMEOUT = { 25, 0 };
 
-enum clnt_stat 
-readblock_1(char **argp, char **clnt_res, CLIENT *clnt)
+char **
+readblock_1(char **argp, CLIENT *clnt)
 {
-	return (clnt_call(clnt, readBlock,
+	static char *clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, readBlock,
 		(xdrproc_t) xdr_wrapstring, (caddr_t) argp,
-		(xdrproc_t) xdr_wrapstring, (caddr_t) clnt_res,
-		TIMEOUT));
+		(xdrproc_t) xdr_wrapstring, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
 }
 
-enum clnt_stat 
-writeblock_1(char **argp, char **clnt_res, CLIENT *clnt)
+char **
+writeblock_1(char **argp, CLIENT *clnt)
 {
-	return (clnt_call(clnt, writeBlock,
+	static char *clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, writeBlock,
 		(xdrproc_t) xdr_wrapstring, (caddr_t) argp,
-		(xdrproc_t) xdr_wrapstring, (caddr_t) clnt_res,
-		TIMEOUT));
+		(xdrproc_t) xdr_wrapstring, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
 }
 
-enum clnt_stat 
-sendblockreportmsg_1(char **argp, char **clnt_res, CLIENT *clnt)
+int *
+sendblockreportmsg_1(void *argp, CLIENT *clnt)
 {
-	return (clnt_call(clnt, sendBlockReportMsg,
-		(xdrproc_t) xdr_wrapstring, (caddr_t) argp,
-		(xdrproc_t) xdr_wrapstring, (caddr_t) clnt_res,
-		TIMEOUT));
+	static int clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, sendBlockReportMsg,
+		(xdrproc_t) xdr_void, (caddr_t) argp,
+		(xdrproc_t) xdr_int, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
 }
 
-enum clnt_stat 
-sendheartbeatmsg_1(char **argp, char **clnt_res, CLIENT *clnt)
+int *
+sendheartbeatmsg_1(void *argp, CLIENT *clnt)
 {
-	return (clnt_call(clnt, sendHeartBeatMsg,
-		(xdrproc_t) xdr_wrapstring, (caddr_t) argp,
-		(xdrproc_t) xdr_wrapstring, (caddr_t) clnt_res,
-		TIMEOUT));
+	static int clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, sendHeartBeatMsg,
+		(xdrproc_t) xdr_void, (caddr_t) argp,
+		(xdrproc_t) xdr_int, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
 }

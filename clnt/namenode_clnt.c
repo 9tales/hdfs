@@ -9,65 +9,107 @@
 /* Default timeout can be changed using clnt_control() */
 static struct timeval TIMEOUT = { 25, 0 };
 
-enum clnt_stat 
-openfile_1(char **argp, char **clnt_res, CLIENT *clnt)
+char **
+openfile_1(char **argp, CLIENT *clnt)
 {
-	return (clnt_call(clnt, openFile,
+	static char *clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, openFile,
 		(xdrproc_t) xdr_wrapstring, (caddr_t) argp,
-		(xdrproc_t) xdr_wrapstring, (caddr_t) clnt_res,
-		TIMEOUT));
+		(xdrproc_t) xdr_wrapstring, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
 }
 
-enum clnt_stat 
-getblocklocations_1(char **argp, char **clnt_res, CLIENT *clnt)
+char **
+getblocklocations_1(char **argp, CLIENT *clnt)
 {
-	return (clnt_call(clnt, getBlockLocations,
+	static char *clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, getBlockLocations,
 		(xdrproc_t) xdr_wrapstring, (caddr_t) argp,
-		(xdrproc_t) xdr_wrapstring, (caddr_t) clnt_res,
-		TIMEOUT));
+		(xdrproc_t) xdr_wrapstring, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
 }
 
-enum clnt_stat 
-assignblock_1(char **argp, char **clnt_res, CLIENT *clnt)
+char **
+assignblock_1(char **argp, CLIENT *clnt)
 {
-	return (clnt_call(clnt, assignBlock,
+	static char *clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, assignBlock,
 		(xdrproc_t) xdr_wrapstring, (caddr_t) argp,
-		(xdrproc_t) xdr_wrapstring, (caddr_t) clnt_res,
-		TIMEOUT));
+		(xdrproc_t) xdr_wrapstring, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
 }
 
-enum clnt_stat 
-closefile_1(char **argp, char **clnt_res, CLIENT *clnt)
+char **
+closefile_1(char **argp, CLIENT *clnt)
 {
-	return (clnt_call(clnt, closeFile,
+	static char *clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, closeFile,
 		(xdrproc_t) xdr_wrapstring, (caddr_t) argp,
-		(xdrproc_t) xdr_wrapstring, (caddr_t) clnt_res,
-		TIMEOUT));
+		(xdrproc_t) xdr_wrapstring, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
 }
 
-enum clnt_stat 
-list_1(char **argp, char **clnt_res, CLIENT *clnt)
+char **
+list_1(char **argp, CLIENT *clnt)
 {
-	return (clnt_call(clnt, list,
+	static char *clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, list,
 		(xdrproc_t) xdr_wrapstring, (caddr_t) argp,
-		(xdrproc_t) xdr_wrapstring, (caddr_t) clnt_res,
-		TIMEOUT));
+		(xdrproc_t) xdr_wrapstring, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
 }
 
-enum clnt_stat 
-sendblockreport_1(char **argp, char **clnt_res, CLIENT *clnt)
+char **
+sendblockreport_1(char **argp, CLIENT *clnt)
 {
-	return (clnt_call(clnt, sendBlockReport,
+	static char *clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, sendBlockReport,
 		(xdrproc_t) xdr_wrapstring, (caddr_t) argp,
-		(xdrproc_t) xdr_wrapstring, (caddr_t) clnt_res,
-		TIMEOUT));
+		(xdrproc_t) xdr_wrapstring, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
 }
 
-enum clnt_stat 
-sendheartbeat_1(char **argp, char **clnt_res, CLIENT *clnt)
+char **
+sendheartbeat_1(char **argp, CLIENT *clnt)
 {
-	return (clnt_call(clnt, sendHeartBeat,
+	static char *clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, sendHeartBeat,
 		(xdrproc_t) xdr_wrapstring, (caddr_t) argp,
-		(xdrproc_t) xdr_wrapstring, (caddr_t) clnt_res,
-		TIMEOUT));
+		(xdrproc_t) xdr_wrapstring, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
 }

@@ -4,12 +4,20 @@
 #include <map>
 #include <set>
 #include <algorithm>
+#include <stdlib.h>
+#include <time.h>
 #include <arpa/inet.h>
 #include "proto/hdfs.pb.h"
 #include "namenode.h"
 
 using namespace std;
 using namespace HDFS;
+
+struct FILEHANDLE {
+  string fname;
+  int fhandle;
+  vector<int> blocks;
+};
 
 struct FILEBLOCKS {
   string fname;
@@ -46,16 +54,66 @@ struct BLOCKLOCATIONS {
 
 /* GLOBAL DATASTRUCTURES */
 
+int BLOCK_COUNT = 1;
+
 vector<FILEBLOCKS> FileBlocksList;
 vector<DATANODE> DataNodeList;
-//vector<BLOCKLOCATIONS> BlockLocationList;
 set<BLOCKLOCATIONS> BlockLocationList;
+vector<FILEHANDLE> OpenHandleWriteList;
+vector<FILEHANDLE> OpenHandleReadList;
+
 
 char **
 openfile_1_svc(char **argp, struct svc_req *rqstp)
 {
-  static char * result;
-  return &result;
+  OpenFileRequest req;
+  OpenFileResponse rsp;
+  
+  string str_arg(*argp);
+  req.ParseFromString(str_arg);
+
+  int fstatuserror = 0;
+  for (unsigned int i=0; i< FileBlocksList.size(); i++) {
+    if (req.filename() == FileBlocksList[i].fname) {
+      fstatuserror = 1;
+    }
+  }
+
+  for (unsigned int i=0; i < OpenHandleWriteList.size(); i++) {
+    if (req.filename() == OpenHandleWriteList[i].fname) {
+      fstatuserror = 1;
+    }
+  }
+
+  if (!fstatuserror) {
+
+    int newhandle;
+    if (!OpenHandleWriteList.empty()) { //not empty
+      newhandle = OpenHandleWriteList.back().fhandle + 1;
+    }
+    else {
+      newhandle = 1;
+    }
+
+    FILEHANDLE fh;
+    fh.fname = req.filename();
+    fh.fhandle = newhandle;
+
+    OpenHandleWriteList.push_back(fh);
+
+    rsp.set_status(1);
+    rsp.set_handle(newhandle);
+  }
+  else {
+    rsp.set_status(0);
+  }
+
+  // serialize this bitch!
+  string str;
+  rsp.SerializeToString(&str);
+  static char *cstr = new char[str.length() + 1];
+  strcpy(cstr, str.c_str());
+  return &cstr;
 }
 
 char **
@@ -68,15 +126,80 @@ getblocklocations_1_svc(char **argp, struct svc_req *rqstp)
 char **
 assignblock_1_svc(char **argp, struct svc_req *rqstp)
 {
-  static char * result;
-  return &result;
+  AssignBlockRequest req;
+  string str_arg (*argp);
+  req.ParseFromString(str_arg);
+
+  AssignBlockResponse rsp;
+
+  if ( !DataNodeList.empty() ) { // DN available
+    int MAX_DN = 2; //maybe make this global?
+    int NUM_DN = DataNodeList.size();
+    int BL_NUM = BLOCK_COUNT++;
+    vector<int> shuf;
+
+    rsp.set_status(20);
+
+    BlockLocations *bl = rsp.mutable_newblock();// = new BlockLocations;
+    bl->set_blocknumber(BL_NUM);
+
+    for (int i=0; i< NUM_DN; i++) {
+      shuf.push_back(i);
+    }
+    while (NUM_DN && MAX_DN) {
+      srand ( time (NULL) );
+      int j = rand() % NUM_DN;
+      int t = shuf[NUM_DN-1];
+      shuf[NUM_DN-1] = shuf[j];
+      shuf[j] = t;
+      NUM_DN--;
+      MAX_DN--;
+      DataNodeLocation *dnl = bl->add_locations();
+      dnl->set_ip( DataNodeList[shuf[t]].host );
+      dnl->set_port( DataNodeList[shuf[t]].port );
+    }
+    for (int i=0; i< DataNodeList.size(); i++) {
+      cout << shuf[i] << " ";
+    }
+    cout << endl;
+    int h = req.handle();
+    for (unsigned int i=0; i< OpenHandleWriteList.size(); i++) {
+      if (OpenHandleWriteList[i].fhandle == h) {
+        OpenHandleWriteList[i].blocks.push_back(BL_NUM);
+      }
+    }
+  }
+
+  int size = rsp.ByteSize();
+  rsp.set_status(size);
+  static char *cstr4 = new char[size];
+  rsp.SerializeToArray(cstr4, size);
+
+  return &cstr4;
 }
 
 char **
 closefile_1_svc(char **argp, struct svc_req *rqstp)
 {
-  static char * result;
-  return &result;
+  CloseFileRequest req;
+  req.ParseFromString(*argp);
+  for (unsigned int i=0; i < OpenHandleWriteList.size(); i++) {
+    if ( OpenHandleWriteList[i].fhandle == req.handle() ) {
+      FILEBLOCKS fb;
+      fb.fname = OpenHandleWriteList[i].fname;
+      fb.block = OpenHandleWriteList[i].blocks;
+    }
+    OpenHandleWriteList.erase(OpenHandleWriteList.begin() +i);
+  }
+
+  CloseFileResponse rsp;  
+  int size = rsp.ByteSize();
+  static char *cstr = new char[size];
+  rsp.SerializeToArray(cstr, size);
+
+  rsp.set_status(0); // no errors
+
+  return &cstr;
 }
 
 char **

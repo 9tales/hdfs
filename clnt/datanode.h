@@ -8,44 +8,43 @@
 
 #include <rpc/rpc.h>
 
-#include <pthread.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-#define DATANODE 0x20110001
+#define DATANODE 0x20150001
 #define DN 1
 
 #if defined(__STDC__) || defined(__cplusplus)
-#define readBlock 6
-extern  enum clnt_stat readblock_1(char **, char **, CLIENT *);
-extern  bool_t readblock_1_svc(char **, char **, struct svc_req *);
-#define writeBlock 7
-extern  enum clnt_stat writeblock_1(char **, char **, CLIENT *);
-extern  bool_t writeblock_1_svc(char **, char **, struct svc_req *);
-#define sendBlockReportMsg 10
-extern  enum clnt_stat sendblockreportmsg_1(char **, char **, CLIENT *);
-extern  bool_t sendblockreportmsg_1_svc(char **, char **, struct svc_req *);
-#define sendHeartBeatMsg 11
-extern  enum clnt_stat sendheartbeatmsg_1(char **, char **, CLIENT *);
-extern  bool_t sendheartbeatmsg_1_svc(char **, char **, struct svc_req *);
+#define readBlock 1
+extern  char ** readblock_1(char **, CLIENT *);
+extern  char ** readblock_1_svc(char **, struct svc_req *);
+#define writeBlock 2
+extern  char ** writeblock_1(char **, CLIENT *);
+extern  char ** writeblock_1_svc(char **, struct svc_req *);
+#define sendBlockReportMsg 3
+extern  int * sendblockreportmsg_1(void *, CLIENT *);
+extern  int * sendblockreportmsg_1_svc(void *, struct svc_req *);
+#define sendHeartBeatMsg 4
+extern  int * sendheartbeatmsg_1(void *, CLIENT *);
+extern  int * sendheartbeatmsg_1_svc(void *, struct svc_req *);
 extern int datanode_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
-#define readBlock 6
-extern  enum clnt_stat readblock_1();
-extern  bool_t readblock_1_svc();
-#define writeBlock 7
-extern  enum clnt_stat writeblock_1();
-extern  bool_t writeblock_1_svc();
-#define sendBlockReportMsg 10
-extern  enum clnt_stat sendblockreportmsg_1();
-extern  bool_t sendblockreportmsg_1_svc();
-#define sendHeartBeatMsg 11
-extern  enum clnt_stat sendheartbeatmsg_1();
-extern  bool_t sendheartbeatmsg_1_svc();
+#define readBlock 1
+extern  char ** readblock_1();
+extern  char ** readblock_1_svc();
+#define writeBlock 2
+extern  char ** writeblock_1();
+extern  char ** writeblock_1_svc();
+#define sendBlockReportMsg 3
+extern  int * sendblockreportmsg_1();
+extern  int * sendblockreportmsg_1_svc();
+#define sendHeartBeatMsg 4
+extern  int * sendheartbeatmsg_1();
+extern  int * sendheartbeatmsg_1_svc();
 extern int datanode_1_freeresult ();
 #endif /* K&R C */
 
